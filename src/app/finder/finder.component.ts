@@ -11,5 +11,7 @@ export class FinderComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  navigate(event: any){
+    console.log(event);
+  }
 }

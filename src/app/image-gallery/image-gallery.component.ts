@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {DataService} from '../services/data.service';
 import {UnsplashItem} from './types';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-image-gallery',
@@ -12,21 +13,29 @@ export class ImageGalleryComponent implements OnInit {
   public unsplashItemList = [];
   public thisPage = 1;
   public numberPages: number;
-  public zoom = false;
-  public zoomedId: string;
-  public zoomedUrl: string;
+  public detail = false;
+  public zoomed = false;
+  public detailId: string;
+  public detailUrl: string;
   public showPagination = false;
-  constructor(private dataService: DataService) {
+  public zoomedUrl;
+  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute) {
 
   }
 
   ngOnInit(): void {
-    this.getRandom();
+    this.activatedRoute.params.subscribe(params => {
+      if (params['q'] != null){
+        this.getDogs(params.q);
+      }
+      else {
+        this.getRandom();
+      }
+    });
   }
-  getDogs(){
+  getDogs(query: string){
     this.showPagination = true;
     this.unsplashItemList = [];
-    const query = 'dog';
     this.dataService.getImgByTerm(query, this.thisPage.toString()).subscribe(response => {
       response.results.forEach(e => {
         this.numberPages = response.total_pages;
@@ -52,7 +61,7 @@ export class ImageGalleryComponent implements OnInit {
         unsplashItem.id = e.id;
         unsplashItem.creationDate = e.created_at;
         unsplashItem.description = e.description;
-        unsplashItem.imgFull = e.urls.full;
+        unsplashItem.imgFull = e.urls.raw;
         unsplashItem.imgRegular = e.urls.regular;
         unsplashItem.imgSmall = e.urls.small;
         unsplashItem.imgThumb = e.urls.thumb;
@@ -70,16 +79,24 @@ export class ImageGalleryComponent implements OnInit {
   right(){
     if (this.thisPage < this.numberPages){
       this.thisPage++;
-      this.getDogs();
+      this.ngOnInit();
     }
   }
-  showZoom(item: UnsplashItem){
-    this.zoom = true;
-    this.zoomedId = item.id;
-    this.zoomedUrl = item.imgRegular + '&h=250&dpr=2';
+  showDetail(item: UnsplashItem){
+    this.detail = true;
+    this.detailId = item.id;
+    this.detailUrl = item.imgRegular + '&h=250&dpr=2';
+    this.zoomedUrl = item.imgFull;
   }
-  hideZoom(){
-    this.zoom = false;
+  hideDetail(){
+    this.detail = false;
+    this.zoomed = false;
+  }
+  enlarge(){
+   this.zoomed = true;
+  }
+  collapse(){
+    this.zoomed = false;
   }
 
 }

@@ -1,8 +1,9 @@
+<app-finder></app-finder>
 <div *ngIf="showPagination" class="btn-success" (click)="left()"><</div>
 <div *ngIf="showPagination"  class="btn-success" (click)="right()">></div>
 <div class="card-columns">
   <div class="card" *ngFor="let item of unsplashItemList">
-    <img class="card-img-top" [src]="item.imgSmall" [alt]="item.id" (click)="showZoom(item)"/>
+    <img class="card-img-top" [src]="item.imgSmall" [alt]="item.id" (click)="showDetail(item)"/>
     <div class="card-body">
       <h5 class="card-title">{{ item.id}}</h5>
       <p class="card-text">
@@ -12,18 +13,19 @@
       <p class="card-text">{{ item.description }}</p>
     </div>
   </div>
-  <div [style.display]="zoom ? 'block' : 'none'" class="modal"
+  <div [style.display]="detail ? 'block' : 'none'" class="modal"
        id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
        aria-hidden="true"
   >
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header text-center">
-        <h4 class="modal-title w-100" id="myModalLabe">{{zoomedId}}</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="hideZoom()">X</button>
+        <h4 class="modal-title w-100" id="myModalLabe">{{detailId}}</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="hideDetail()">X</button>
       </div>
       <div class="modal-body">
-        <img class="img-responsive" src="{{zoomedUrl}}" alt="" >
+        <img *ngIf="!zoomed" class="img-responsive" src="{{detailUrl}}" alt="" (click)="enlarge()">
+        <img *ngIf="zoomed" class="img-zoom" src="{{zoomedUrl}}" alt="" (click)="collapse()">
       </div>
     </div>
   </div>
