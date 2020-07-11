@@ -1,16 +1,28 @@
-<app-finder></app-finder>
-<div *ngIf="showPagination" class="btn-success" (click)="left()"><</div>
-<div *ngIf="showPagination"  class="btn-success" (click)="right()">></div>
+
+<nav class="navbar navbar-light bg-light justify-content-between">
+  <a class="navbar-brand">
+    <img src="assets/images/PicFlow.png" alt="" routerLink="/">
+    <button class="btn-home btn-primary btn-sm" routerLink="/">HOME</button>
+  </a>
+  <div class="custom-control-inline">
+    <input type="text" placeholder="Search" (keyup.enter)="search(searchEl.value)" #searchEl>
+  </div>
+</nav>
+<nav class="navbar navbar-light bg-light justify-content-between" *ngIf="showPagination">
+  <button   class="btn-primary btn-lg" (click)="left()" [disabled]="thisPage<=1"><</button>
+  <label>Page: {{thisPage}} of {{numberPages}} total</label>
+  <button   class="btn-primary btn-lg" (click)="right()">></button>
+</nav>
 <div class="card-columns">
   <div class="card" *ngFor="let item of unsplashItemList">
     <img class="card-img-top" [src]="item.imgSmall" [alt]="item.id" (click)="showDetail(item)"/>
     <div class="card-body">
-      <h5 class="card-title">{{ item.id}}</h5>
+      <!--h5 class="card-title">{{ item.id}}</h5-->
       <p class="card-text">
-        Uploaded by {{ item.userName}} on
+        Uploaded by <span class="font-weight-bold">{{ item.userName}}</span> on
         {{ item.creationDate | date: "medium" }}
       </p>
-      <p class="card-text">{{ item.description }}</p>
+      <p class="card-text comment">{{ item.description }}</p>
     </div>
   </div>
   <div [style.display]="detail ? 'block' : 'none'" class="modal"
@@ -20,7 +32,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header text-center">
-        <h4 class="modal-title w-100" id="myModalLabe">{{detailId}}</h4>
+        <h4 class="modal-title w-100" id="myModalLabe">{{detailTitle}}</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="hideDetail()">X</button>
       </div>
       <div class="modal-body">
@@ -31,3 +43,8 @@
   </div>
   </div>
 </div>
+<nav class="navbar navbar-light bg-light justify-content-between" *ngIf="showPagination">
+  <button   class="btn-primary btn-lg" (click)="left()" [disabled]="thisPage<=1"><</button>
+  <label>Page: {{thisPage}} of {{numberPages}} total</label>
+  <button   class="btn-primary btn-lg" (click)="right()">></button>
+</nav>

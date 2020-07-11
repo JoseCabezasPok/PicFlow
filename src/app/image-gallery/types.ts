@@ -1,5 +1,5 @@
-export class UnsplashItem {
-  id: string;
+export interface UnsplashItem {
+  title: string;
   creationDate: Date;
   description?: string;
   imgFull: URL;

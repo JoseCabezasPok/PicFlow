@@ -22,3 +22,18 @@
 .modal-content{
   height: 95vh;
 }
+.card-text{
+  color: darkgray;
+}
+.comment{
+  font-style: italic;
+}
+.navbar-brand:hover{
+  cursor: pointer;
+}
+.card-img-top:hover{
+  cursor: pointer;
+}
+.modal-title{
+  color: gray;
+}

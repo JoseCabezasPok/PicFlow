@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {DataService} from '../services/data.service';
 import {UnsplashItem} from './types';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-image-gallery',
@@ -9,45 +9,50 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['./image-gallery.component.css']
 })
 export class ImageGalleryComponent implements OnInit {
-
+  public query = '';
   public unsplashItemList = [];
   public thisPage = 1;
   public numberPages: number;
   public detail = false;
   public zoomed = false;
-  public detailId: string;
+  public detailTitle: string;
   public detailUrl: string;
   public showPagination = false;
   public zoomedUrl;
-  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute) {
+  constructor(private dataService: DataService, private activatedRoute: ActivatedRoute, private router: Router) {
 
   }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       if (params['q'] != null){
-        this.getDogs(params.q);
+        if ( params['q'] !== this.query){
+          this.query = params['q'];
+          this.getTerm(this.query);
+        }
       }
       else {
         this.getRandom();
       }
     });
   }
-  getDogs(query: string){
+  getTerm(query: string){
     this.showPagination = true;
     this.unsplashItemList = [];
     this.dataService.getImgByTerm(query, this.thisPage.toString()).subscribe(response => {
       response.results.forEach(e => {
         this.numberPages = response.total_pages;
-        const unsplashItem = new UnsplashItem() ;
-        unsplashItem.id = e.id;
-        unsplashItem.creationDate = e.created_at;
-        unsplashItem.description = e.description;
-        unsplashItem.imgFull = e.urls.full;
-        unsplashItem.imgRegular = e.urls.regular;
-        unsplashItem.imgSmall = e.urls.small;
-        unsplashItem.imgThumb = e.urls.thumb;
-        unsplashItem.userName = e.user.username;
+        const unsplashItem = {
+          title : e.alt_description,
+          creationDate:  e.created_at,
+          description : e.description,
+          imgFull : e.urls.full,
+          imgRegular:  e.urls.regular,
+          imgSmall : e.urls.small,
+          imgThumb : e.urls.thumb,
+          userName : e.user.username
+        };
+
         this.unsplashItemList.push(unsplashItem);
       });
     });
@@ -57,34 +62,37 @@ export class ImageGalleryComponent implements OnInit {
     this.showPagination = false;
     this.dataService.getRandomPictures().subscribe(response => {
       response.forEach(e => {
-        const unsplashItem = new UnsplashItem() ;
-        unsplashItem.id = e.id;
-        unsplashItem.creationDate = e.created_at;
-        unsplashItem.description = e.description;
-        unsplashItem.imgFull = e.urls.raw;
-        unsplashItem.imgRegular = e.urls.regular;
-        unsplashItem.imgSmall = e.urls.small;
-        unsplashItem.imgThumb = e.urls.thumb;
-        unsplashItem.userName = e.user.username;
+        const unsplashItem = {
+          title : e.alt_description,
+          creationDate:  e.created_at,
+          description : e.description,
+          imgFull : e.urls.full,
+          imgRegular:  e.urls.regular,
+          imgSmall : e.urls.small,
+          imgThumb : e.urls.thumb,
+          userName : e.user.username
+        };
         this.unsplashItemList.push(unsplashItem);
       });
     });
   }
   left(){
     if (this.thisPage > 1){
+      this.query = '';
       this.thisPage--;
       this.ngOnInit();
     }
   }
   right(){
     if (this.thisPage < this.numberPages){
+      this.query = '';
       this.thisPage++;
       this.ngOnInit();
     }
   }
   showDetail(item: UnsplashItem){
     this.detail = true;
-    this.detailId = item.id;
+    this.detailTitle = item.title;
     this.detailUrl = item.imgRegular + '&h=250&dpr=2';
     this.zoomedUrl = item.imgFull;
   }
@@ -98,5 +106,8 @@ export class ImageGalleryComponent implements OnInit {
   collapse(){
     this.zoomed = false;
   }
-
+  search(term: string){
+    this.thisPage = 1;
+    this.router.navigate([term]);
+  }
 }
