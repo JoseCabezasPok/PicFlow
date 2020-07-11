@@ -1,6 +1,6 @@
-# UnsplashFinder
+# PicFlow
 
-Unsplash finder is a small project for demo and educational purposes.
+PicFLow is a small project for demo and educational purposes.
 It allows you to search related images and navigate through results
 
 ## Development server 
