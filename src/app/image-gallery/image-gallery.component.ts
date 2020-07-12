@@ -55,6 +55,9 @@ export class ImageGalleryComponent implements OnInit {
 
         this.unsplashItemList.push(unsplashItem);
       });
+      if ( this.unsplashItemList.length === 0 ){
+        this.showPagination = false;
+      }
     });
   }
   getRandom(){
